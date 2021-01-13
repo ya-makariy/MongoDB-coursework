@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: yamakariy/mongodb_coursework:latest
+        imagePullPolicy: Always
+        env:
+        - name: MONGO_INITDB_DATABASE
+          value: tchallenge
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: password
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: admin
+        ports:
+        - containerPort: 27017
+        restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-express
+  labels:
+    app: mongo-express
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-express
+  template:
+    metadata:
+      labels:
+        app: mongo-express
+    spec:
+      containers:
+      - env:
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+          value: password
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          value: admin
+        - name: ME_CONFIG_MONGODB_SERVER
+          value: mongodb
+        image: mongo-express:latest
+        imagePullPolicy: Always
+        name: mongo-express
+        ports:
+        - containerPort: 8081
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongodb
+  name: mongodb
+spec:
+  ports:
+  - name: "27017"
+    port: 27017
+    targetPort: 27017
+  selector:
+    app: mongodb
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongo-express
+  name: mongo-express
+spec:
+  ports:
+  - name: "8081"
+    port: 8081
+    targetPort: 8081
+  selector:
+    app: mongo-express
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Route
+metadata:
+  labels:
+    app: mongo-express
+  name: route-mongo-express
+spec:
+  host: mongo-express.openshift.devops.t-systems.ru
+  path: /
+  to:
+    kind: Service
+    name: mongo-express

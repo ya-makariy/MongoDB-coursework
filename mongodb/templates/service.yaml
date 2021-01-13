@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Values.image.mongo.app }}
+  name: {{ .Values.image.mongo.app }}
+spec:
+  ports:
+  - name: "27017"
+    port: {{ .Values.service.mongo.port }}
+    targetPort: {{ .Values.service.mongo.targetPort }}
+  selector:
+    app: {{ .Values.image.mongo.app }}
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Values.image.express.app }}
+  name: {{ .Values.image.express.app }}
+spec:
+  ports:
+  - name: "27017"
+    port: {{ .Values.service.express.port }}
+    targetPort: {{ .Values.service.express.targetPort }}
+  selector:
+    app: {{ .Values.image.express.app }}
+status:
+  loadBalancer: {}

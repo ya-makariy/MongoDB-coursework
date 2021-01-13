@@ -1,0 +1,12 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: {{ .Values.image.express.app }}
+  name: {{ .Values.image.express.app }}
+spec:
+  host: {{ .Values.route.express.host }}
+  path: {{ .Values.route.express.path }}
+  to:
+    kind: Service
+    name: {{ .Values.image.express.app }}

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.image.mongo.app }}
+  labels:
+    app: {{ .Values.image.mongo.app }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.image.mongo.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.image.mongo.app }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.mongo.repository }}:latest
+        imagePullPolicy: {{ .Values.image.mongo.pullPolicy }}
+        env:
+        - name: {{ .Values.image.mongo.env1.name }}
+          value: {{ .Values.image.mongo.env1.value }}
+        - name: {{ .Values.image.mongo.env2.name }}
+          value: {{ .Values.image.mongo.env2.value }}
+        - name: {{ .Values.image.mongo.env3.name }}
+          value: {{ .Values.image.mongo.env3.value }}
+        ports:
+        - containerPort: {{ .Values.image.mongo.containerPort }}
+      restartPolicy: {{ .Values.image.mongo.restartPolicy }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.image.express.app }}
+  labels:
+    app: {{ .Values.image.express.app }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.image.express.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.image.express.app }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.express.repository }}:latest
+        imagePullPolicy: {{ .Values.image.express.pullPolicy }}
+        env:
+        - name: {{ .Values.image.express.env1.name }}
+          value: {{ .Values.image.express.env1.value }}
+        - name: {{ .Values.image.express.env2.name }}
+          value: {{ .Values.image.express.env2.value }}
+        - name: {{ .Values.image.express.env3.name }}
+          value: {{ .Values.image.express.env3.value }}
+        ports:
+        - containerPort: {{ .Values.image.express.containerPort }}
+      restartPolicy: {{ .Values.image.express.restartPolicy }}
